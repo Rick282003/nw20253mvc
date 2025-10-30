@@ -6,7 +6,7 @@ use Controllers\PublicController;
 use Views\Renderer;
 use Dao\Clientes\Clientes as ClienteDao;
 
-class Clientes extends PublicController
+class ClientesL extends PublicController
 {
     public function run(): void
     {
