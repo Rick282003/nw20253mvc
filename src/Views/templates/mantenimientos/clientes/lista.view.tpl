@@ -12,7 +12,7 @@
                 <th>Correo</th>
                 <th>Estado</th>
                 <td>Nota</td>
-
+                <th><a href="index.php?page=Mantenimientos-ClienteForm&mode=INS">Nuevo</a></th> <!-- hipervinculo de creacion de registros-->
             </tr>
         </thead>
         <tbody>
@@ -25,6 +25,11 @@
                 <td>{{correo}}</td>
                 <td>{{estado}}</td>
                 <td>{{nota}} | {{grado}}</td>
+                <td>
+                    <a href="index.php?page=Mantenimientos-ClienteForm&mode=UPD&codigo={{codigo}}">Editar</a>&nbsp;<!-- boton de edicion de registros con el codigo de la lista del ID-->
+                    <a href="index.php?page=Mantenimientos-ClienteForm&mode=DEL&codigo={{codigo}}">Eliminar</a>&nbsp;<!-- boton de elimnar registros-->
+                    <a href="index.php?page=Mantenimientos-ClienteForm&mode=DSP&codigo={{codigo}}">Ver</a><!-- boton de visualizar registros-->
+                </td>
             </tr>
             {{endfor clientes}}
         </tbody>
