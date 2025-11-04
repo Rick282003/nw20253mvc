@@ -136,15 +136,56 @@ class ClienteForm extends PublicController
             if ($this->isPostBack()) { //metodo del framework
                 $this->errores = $this->validarPostData();
                 if (count($this->errores) === 0) {
-                    switch ($this->mode) {
-                        case "INS":
-                            //Llamar a Dao para Ingresar
+                    try { //try catch para capturar error al hacer CRUD
+                        switch ($this->mode) {
+                            case "INS":
+                                //Llamar a Dao para Ingresar
+                                $affectedRows = DAOClientes::crearCliente(
+                                    $this->codigo,
+                                    $this->nombre,
+                                    $this->direccion,
+                                    $this->correo,
+                                    $this->telefono,
+                                    $this->estado,
+                                    $this->evaluacion
+                                ); //si es INS llamamos a la funcion de insertar en la tabla de clientes
 
-                        case "UPD":
-                            //Llamar a Dao para Actualizar
+                                if ($affectedRows > 0) { //si la variable que llama la funcion de insertar devuelve mas de 0 ejecuciones redirreciona a la lista y da un mensaje
+                                    Site::redirectToWithMsg(CLIENTES_LIST, "Nuevo Cliente creado satisfactoriamente.");
+                                }
+                                break;
 
-                        case "DEL":
-                            //Llamar a Dao para Eliminar
+                            case "UPD":
+                                //Llamar a Dao para Actualizar
+                                $affectedRows = DAOClientes::actualizarCliente(
+                                    $this->codigo,
+                                    $this->nombre,
+                                    $this->direccion,
+                                    $this->correo,
+                                    $this->telefono,
+                                    $this->estado,
+                                    $this->evaluacion
+                                ); //si es UPD llamamos a la funcion de atualizar en la tabla de clientes
+
+                                if ($affectedRows > 0) { //si la variable que llama la funcion de actualizar devuelve mas de 0 ejecuciones redirreciona a la lista y da un mensaje
+                                    Site::redirectToWithMsg(CLIENTES_LIST, "Cliente actualizado satisfactoriamente.");
+                                }
+                                break;
+
+                            case "DEL":
+                                //Llamar a Dao para Eliminar
+                                $affectedRows = DAOClientes::eliminarCliente(
+                                    $this->codigo
+                                ); //si es DEL llamamos a la funcion de eliminar en la tabla de clientes
+
+                                if ($affectedRows > 0) { //si la variable que llama la funcion de eliminar devuelve mas de 0 ejecuciones redirreciona a la lista y da un mensaje
+                                    Site::redirectToWithMsg(CLIENTES_LIST, "Cliente eliminado satisfactoriamente.");
+                                }
+                                break;
+                        }
+                    } catch (Exception $err) {
+                        error_log($err, 0);
+                        $this->errores[] = $err;
                     }
                 }
             }
