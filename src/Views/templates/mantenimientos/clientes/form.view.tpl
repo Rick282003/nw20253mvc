@@ -12,42 +12,54 @@
     <form action="index.php?page=Mantenimientos-ClienteForm&mode={{mode}}&codigo={{codigo}}" method="post"><!-- hacemos postback -->
         <div>
             <label for="codigo">Código: </label>
-            <input type="text" name="codigo" id="codigo" value="{{codigo}}"/>
+            <input type="text" name="codigo" id="codigo" value="{{codigo}}" {{codigoReadonly}}/>
+            <input type="hidden" name="xrl8" value="{{token}}"/><!-- token hash-->
         </div>
 
         <div>
             <label for="nombre">Nombre: </label>
-            <input type="text" name="nombre" id="nombre" value="{{nombre}}"/>
+            <input type="text" name="nombre" id="nombre" value="{{nombre}}" {{readonly}}/> <!-- readonly es propio de html en input, segun lo que se mande del controlador podemos resivir un readonly o cadena vacia -->
         </div>
 
         <div>
             <label for="direccion">Dirección: </label>
-            <input type="text" name="direccion" id="direccion" value="{{direccion}}"/>
+            <input type="text" name="direccion" id="direccion" value="{{direccion}}" {{readonly}}/>
         </div>
 
         <div>
             <label for="telefono">Telefono: </label>
-            <input type="text" name="telefono" id="telefono" value="{{telefono}}"/>
+            <input type="text" name="telefono" id="telefono" value="{{telefono}}" {{readonly}}/>
         </div>
 
         <div>
             <label for="correo">Correo: </label>
-            <input type="email" name="correo" id="correo" value="{{correo}}"/>
+            <input type="email" name="correo" id="correo" value="{{correo}}" {{readonly}}/>
         </div>
 
         <div>
             <label for="estado">Estado: </label>
-            <input type="text" name="estado" id="estado" value="{{estado}}"/>
+            {{ifnot readonly}}<!-- Esto para que al no ser readonly aparezca los options -->
+                <select name="estado" id="estado">
+                    <option value="ACT" {{selectedACT}}>Activo</option><!-- Aqui asignaremos que option tiene selected, radio buttons igual pero con checked -->
+                    <option value="INA" {{selectedINA}}>Inactivo</option>
+                </select>
+            {{endifnot readonly}}
+
+            {{if readonly}}
+                <input type="text" name="estado" id="estado" value="{{estado}}" {{readonly}}/>
+            {{endif readonly}}
         </div>
 
         <div>
             <label for="evaluacion">Evaluación: </label>
-            <input type="text" name="evaluacion" id="evaluacion" value="{{evaluacion}}"/>
+            <input type="text" name="evaluacion" id="evaluacion" value="{{evaluacion}}" {{readonly}}/>
         </div>
 
         <div>
             <button id="btnCancelar">Cancelar</button>
-            <button id="btnConfirmar" type="submit">Confirmar</button>
+            {{ifnot isDisplay}} <!-- si no es display muestre el boton de confirmar, si es DSP no lo muestra-->
+                <button id="btnConfirmar" type="submit">Confirmar</button>
+            {{endifnot isDisplay}}
         </div>
 
     </form>

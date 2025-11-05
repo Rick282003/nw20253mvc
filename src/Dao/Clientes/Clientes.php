@@ -6,12 +6,14 @@ use Dao\Table;
 
 class Clientes extends Table
 {
+    //Función para obtener todos los registros de una tabla
     public static function obtenerClientes(): array
     {
         $sqlstr = "SELECT * from clientes;"; //Este es el querry que ejecutaremos
         return self::obtenerRegistros($sqlstr, []); //De tabla usamos el metodo para ejecutar el querry
     }
 
+    //Función para obtener un registros de una tabla
     public static function obtenerClientePorCodigo(string $codigo): array
     {
         $sqlstr = "SELECT * from clientes WHERE codigo=:codigo;"; //parametro, evita que usuario haga inyeccion de sql

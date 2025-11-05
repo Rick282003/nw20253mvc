@@ -44,6 +44,8 @@ class ClienteForm extends PublicController
 
     private array $errores = [];
 
+    private string $validationToken = ''; //Para el hash de sesion
+
     // 1)
     private function page_init() // Aqui vemos cual es el modo
     {
@@ -76,6 +78,12 @@ class ClienteForm extends PublicController
         }
     }
 
+    private function generarTokenDeValidacion()
+    {
+        $this->validationToken = md5(gettimeofday(true) . $this->name . rand(1000, 9999)); //fecha, nombre de clase, num aleatorio, en hash de 64bits
+        $_SESSION[$this->name . "_token"] = $this->validationToken; //en sesion guardamos en una llave compuesta lo generado arriba
+    }
+
     // 4)
     private function preparar_datos_vista()
     {
@@ -99,12 +107,33 @@ class ClienteForm extends PublicController
         $viewData["errores"] = $this->errores; //Para ver los errores
         $viewData["hasErrores"] = count($this->errores) > 0;
 
+
+        $this->generarTokenDeValidacion();
+        $viewData["token"] = $this->validationToken; //hash
+
+
+        $viewData["codigoReadonly"] = $this->mode !== "INS" ? "readonly" : ""; //Ternaria, si no es insertar el codigo no se puede editar
+
+        $viewData["readonly"] = in_array($this->mode, ["DSP", "DEL"]) ? "readonly" : ""; //Ternaria, si esta en DSP y DEL solo se lee
+
+        $viewData["isDisplay"] = $this->mode === "DSP"; //Para el boton confirmar no este en DSP
+
+        $viewData["selected" . $this->estado] = "selected"; //Concatenamos el selected con el estado que es ACT o INA y completamos la variable que espera la vista, radio igual pero con checked
         return $viewData;
     }
 
     private function validarPostData(): array
     {
         $errores = [];
+
+        $this->validationToken = $_POST["xrl8"] ?? ""; //hash enviado de formview
+        if (isset($_SESSION[$this->name . "_token"]) && $_SESSION[$this->name . "_token"] !== $this->validationToken) {
+            // throw new Exception("Error de Validación de Token, no hackeable :("); //verificamos que el hash en sesion sea igual al mandado
+
+            $errores[] = "Error de Validación de Token, no hackeable :("; //Asi para que aparezca como cadena de error
+            return $errores;
+        }
+
 
         //Capturamos datos del post
         $this->codigo = $_POST["codigo"] ?? ''; //si no existe se le asigna un valor por defecto
